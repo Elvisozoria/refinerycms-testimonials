@@ -5,9 +5,7 @@ module Refinery
 
   module Testimonials
     require 'refinery/testimonials/engine'
-    require 'refinery/testimonials/configuration'
 
-    autoload :Tab, 'refinery/testimonials/tabs'
     class << self
       attr_writer :root
 
@@ -18,11 +16,6 @@ module Refinery
       def factory_paths
         @factory_paths ||= [ root.join('spec', 'factories').to_s ]
       end
-
-      def tabs
-        @tabs ||= []
-      end
-
     end
   end
 end

@@ -1,29 +1,15 @@
-<% edit_tip = t('.edit')
-   delete_tip = t('.delete')
-   css_classes = [:record, cycle("on", "on-hover")]
-   title = "#{testimonial.name} #{testimonial&.company.bracket if testimonial.company.present?}"
-   testimonial.warnings.attribute_names.each { |key| css_classes.push key } unless testimonial.sensible?
-%>
+<li class='clearfix record <%= cycle("on", "on-hover") %>' id="<%= dom_id(testimonial) -%>">
+  <span class='title'>
+    <%= testimonial.byline %>
+  </span>
 
-<li class="<%= css_classes.join(' ') %>" id="<%= dom_id(testimonial) %>" >
-  <%= link_to title, refinery.edit_testimonials_admin_testimonial_path(testimonial), title: edit_tip, class: :title %>
+  <span class='preview'></span>
 
-  <% if testimonial.warnings.attribute_names.include? :received_date %>
-    <span class="no_date" ></span >
-  <% else %>
-    <span class="date" > <%= testimonial.received_date.strftime('%b, %Y') %>  </span >
-  <% end %>
-
-  <span class='actions' >
-    <%= action_icon :edit, refinery.edit_testimonials_admin_testimonial_path(testimonial), edit_tip %>
-    <%= action_icon :delete,
-                    refinery.testimonials_admin_testimonial_path(testimonial),
-                    delete_tip,
-                    class: "cancel confirm-delete",
-                    data: {
-                      confirm: t('refinery.admin.delete.message', title: testimonial.name)
-                    },
-                    method: :delete -%>
-  </span >
-</li >
-
+  <span class='actions'>
+    <%= action_icon(:preview, refinery.testimonials_testimonial_path(testimonial), t('.view_live_html')) %>
+    <%= action_icon(:edit,    refinery.edit_testimonials_admin_testimonial_path(testimonial), t('.edit') ) %>
+    <%= action_icon(:delete,  refinery.testimonials_admin_testimonial_path(testimonial), t('.delete'),
+      { class: "cancel confirm-delete",
+        data: {confirm: t('message',  scope: 'refinery.admin.delete', title: testimonial.quote)}}  ) %>
+  </span>
+</li>

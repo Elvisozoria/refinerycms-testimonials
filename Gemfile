@@ -1,51 +1,43 @@
 source "https://rubygems.org"
+
 gemspec
 
-git "https://github.com/refinery/refinerycms", branch: "master" do
-  gem "refinerycms"
+git 'https://github.com/refinery/refinerycms.git', :branch => 'master' do
+  gem 'refinerycms'
 
-  group :test do
-    gem "refinerycms-testing"
+  group :development, :test do
+    gem 'refinerycms-testing'
   end
 end
 
-# control data as it changes with migrations
-gem 'data_migrate'
-
 # Database Configuration
-unless ENV["TRAVIS"]
-  gem "activerecord-jdbcsqlite3-adapter", :platform => :jruby
-  gem "sqlite3", :platform => :ruby
+platforms :jruby do
+  gem 'activerecord-jdbcsqlite3-adapter'
+  gem 'activerecord-jdbcmysql-adapter'
+  gem 'activerecord-jdbcpostgresql-adapter'
+  gem 'jruby-openssl'
 end
 
-if !ENV["TRAVIS"] || ENV["DB"] == "mysql"
-  gem "activerecord-jdbcmysql-adapter", :platform => :jruby
-  gem "jdbc-mysql", "= 5.1.13", :platform => :jruby
-  gem "mysql2", :platform => :ruby
+platforms :ruby do
+  gem 'sqlite3'
+  gem 'mysql2'
+  gem 'pg'
 end
 
-if !ENV["TRAVIS"] || ENV["DB"] == "postgresql"
-  gem "activerecord-jdbcpostgresql-adapter", :platform => :jruby
-  gem "pg", :platform => :ruby
+group :development, :test do
+  gem 'rspec-its' # for the model's validation tests.
+  platforms :ruby do
+    require 'rbconfig'
+    if RbConfig::CONFIG['target_os'] =~ /linux/i
+      gem 'therubyracer', '~> 0.11.4'
+    end
+  end
 end
 
-gem "jruby-openssl", :platform => :jruby
-
-group :development do
-  gem 'listen'
+# Gems used only for assets and not required
+# in production environments by default.
+group :assets do
+  gem 'sass-rails'
+  gem 'coffee-rails'
+  gem 'uglifier'
 end
-
-group :test do
-  gem 'generator_spec', '~> 0.9.3'
-  gem 'launchy'
-  gem 'coveralls', require: false
-  gem 'rspec-retry'
-  gem 'falcon'
-  gem 'falcon-capybara'
-end
-
-# Load local gems according to Refinery developer preference.
-if File.exist? local_gemfile = File.expand_path("../.gemfile", __FILE__)
-  eval File.read(local_gemfile)
-end
-

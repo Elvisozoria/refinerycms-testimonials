@@ -1,12 +1,19 @@
 Refinery::I18n.frontend_locales.each do |lang|
   I18n.locale = lang
 
-  if defined?(Refinery::User)
-    Refinery::User.all.each do |user|
-      if user.plugins.where(:name => 'refinerycms-testimonials').blank?
-        user.plugins.create(:name => 'refinerycms-testimonials',
-                            :position => (user.plugins.maximum(:position) || -1) +1)
-      end
+  Refinery::User.find_each do |user|
+    user.plugins.where(name: 'refinerycms-testimonials').first_or_create!(
+      position: (user.plugins.maximum(:position) || -1) +1
+    )
+  end if defined?(Refinery::User)
+
+  Refinery::Page.where(link_url: (url = "/testimonials")).first_or_create!(
+    title: 'Testimonials',
+    deletable: false,
+    menu_match: "^#{url}(\/|\/.+?|)$"
+  ) do |page|
+    Refinery::Pages.default_parts.each_with_index do |part, index|
+      page.parts.build title: part[:title], slug: part[:slug], body: nil, position: index
     end
-  end
+  end if defined?(Refinery::Page)
 end

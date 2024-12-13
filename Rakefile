@@ -6,17 +6,14 @@ rescue LoadError
 end
 
 ENGINE_PATH = File.dirname(__FILE__)
-APP_RAKEFILE = File.expand_path("../spec/dummy/Rakefile", __FILE__)
+APP_RAKEFILE = File.expand_path "../spec/dummy/Rakefile", __FILE__
 
-load 'rails/tasks/engine.rake' if File.exists?(APP_RAKEFILE)
-
-Dir[File.expand_path('../tasks/**/*', __FILE__)].each do |task|
-  load task
+if File.exists? APP_RAKEFILE
+  load 'rails/tasks/engine.rake'
 end
 
 require "refinerycms-testing"
 Refinery::Testing::Railtie.load_dummy_tasks ENGINE_PATH
 
-desc "Build gem files for all projects"
-task build: "all:build"
-task default: :spec
+load File.expand_path('../tasks/testing.rake', __FILE__)
+load File.expand_path('../tasks/rspec.rake', __FILE__)

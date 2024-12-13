@@ -1,34 +1,25 @@
-# frozen_string_literal: true
-
 module Refinery
   module Testimonials
     module Admin
-
       class TestimonialsController < ::Refinery::AdminController
+        before_action :find_all, only: [:index]
+
         crudify :'refinery/testimonials/testimonial',
-                include: [:translations],
-                title_attribute: :flash_name,
-                order: 'received_date DESC'
+                :title_attribute => 'quote'
 
-        private
-
-        def testimonial_params
-          params.require(:testimonial).permit(permitted_testimonial_params)
+        def index
+          @testimonials = @testimonials.where("byline LIKE '%#{params[:search]}%' OR quote LIKE '%#{params[:search]}%'") if searching?
+          @testimonials = @testimonials.paginate({page: params[:page]})
         end
 
-        def permitted_testimonial_params
-          %i[
-            company
-            display
-            excerpt
-            job_title
-            name
-            position
-            quote
-            received_channel
-            received_date
-            website
-          ]
+        private
+        def find_all
+          @testimonials = Testimonial.order("position DESC").all
+        end
+
+        # Only allow a trusted parameter "white list" through.
+        def testimonial_params
+          params.require(:testimonial).permit(:quote, :byline, :position)
         end
       end
     end

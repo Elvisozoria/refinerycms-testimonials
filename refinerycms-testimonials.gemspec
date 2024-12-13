@@ -1,20 +1,20 @@
-require File.expand_path('lib/refinery/testimonials/version', __dir__)
+# Encoding: UTF-8
 
-version = Refinery::Testimonials::Version.to_s
 Gem::Specification.new do |s|
   s.platform          = Gem::Platform::RUBY
   s.name              = 'refinerycms-testimonials'
-  s.version           = version
+  s.version           = '1.0'
   s.description       = 'Ruby on Rails Testimonials extension for Refinery CMS'
-  s.date              = '2019-02-16'
+  s.date              = '2020-12-09'
   s.summary           = 'Testimonials extension for Refinery CMS'
-  s.require_paths     = %w[lib]
-  s.files             = Dir['{app,config,db,lib}/**/*'] + ['readme.md']
-  s.authors           = 'tsdbrown - Luke Brown- magpieuk, Lee Irving - http://www.transcendit.co.uk, Anita Graham - http//:www.joli.com.au'
+  s.authors           = 
+  s.require_paths     = %w(lib)
+  s.files             = Dir["{app,config,db,lib}/**/*"] + ["readme.md"]
 
   # Runtime dependencies
-  s.add_dependency 'refinerycms-core',  ['>= 4.1', '< 5.0']
-  s.add_dependency 'rails', ['~> 6.1', '< 7']
+  s.add_dependency             'refinerycms-core',    '~> 4.1.0'
+  s.add_dependency             'acts_as_indexed',     '~> 0.8.0'
 
-  s.required_ruby_version = '>= 2.2.2'
+  # Development dependencies (usually used for testing)
+  s.add_development_dependency 'refinerycms-testing', '~> 4.0.3'
 end
